@@ -1,9 +1,15 @@
 #ifndef __BANK_H__
 #define __BANK_H__
 
+class Student;
+
 _Monitor Bank {
+	unsigned int numStudents;
+	unsigned int * studentArray;
   public:
+    _Event InsufficientFunds;
 	Bank( unsigned int numStudents );
+	~Bank();
 	void deposit( unsigned int id, unsigned int amount );
 	void withdraw( unsigned int id, unsigned int amount );
 };

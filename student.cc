@@ -6,7 +6,7 @@ Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOf
 void Student::main() {
     for (;;) {
 
-        yield(prng(1, 10));
+        yield(prng(1, 11));
 
         // select number of bottles to purchase
         
@@ -20,16 +20,20 @@ void Student::main() {
 
         // wait until enough funds
 
-        // purchase (Use gift card first)
-        // gift cards can only be used once
+        try {
+            // purchase (Use gift card first)
+            // gift cards can only be used once
 
-        // Courier may lose WATCard, must create new one and buy again (no yield)
+            // Courier may lose WATCard, must create new one and buy again (no yield)
 
-        // if free soda yield(4)
+            // insufficient funds
 
-        // insufficient funds
+            // out of stock
 
-        // out of stock
+        } catch ( VendingMachine:: free & ) {
+            //  must watch an ad
+            yield(4);
+        }
 
 
         // terminate when maxPurchases of favourite flavour

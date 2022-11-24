@@ -7,7 +7,7 @@ Truck::Truck( Printer & prt, NameServer & nameServer, BottlingPlant & plant,
 void Truck::main() {
     for (;;) {
         // Tims run
-        yield(prng(1, 10));
+        yield(prng(1, 11));
 
 
         try {
@@ -17,6 +17,9 @@ void Truck::main() {
         }
 
         // cycle through vending machines and restock, remember which was last
+
+        // call unsigned int * stock = machine.inventory() and no more than MaxStockPerFlavour
+        // finish by calling machine.restocked()
 
         // 1 in 100 chnace of flat tire, yield 10
     }
