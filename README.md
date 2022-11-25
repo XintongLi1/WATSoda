@@ -2,16 +2,16 @@
 
 Chapter 11 administrators
 
-First phase
+First phase - Monday
+Student Groupoff Vending Machines - Chris
 
-Student Groupoff
+Parent Courrier Bank WATCardOffice - Xintong
 
-Parent Courrier Bank 
+Second Phase - Thursday
+Truck and NameServer
 
-WATCard
+Third Phase - Saturday
+Bottling Plant 
 
-Second Phase
-Truck and Vending Machines
-
-Third Phase
-Bottling Plant and NameServer
+Final Phase - Tuesday
+Testing & Documentation
