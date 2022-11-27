@@ -7,6 +7,7 @@ Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOf
     
     // select a favourite flavour
     unsigned int flavour = prng(0, 3);
+    prt.print(Printer::Kind::Student, id, 'S', flavour, amount);
 
     // create WATCard with $5 balance
     card = cardOffice.create(id, 5);
@@ -16,6 +17,7 @@ Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOf
 
     // find vending machine location
     vm = nameServer.getMachine();
+    prt.print(Printer::Kind::Student, id, 'V', (int)(vm->getId()));
 }
 
 void Student::main() {
