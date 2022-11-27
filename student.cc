@@ -1,41 +1,65 @@
 #include "student.h"
 
 Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOffice, Groupoff & groupoff,
-			 unsigned int id, unsigned int maxPurchases ) : prt(prt), nameServer(nameServer), cardOffice(cardOffice), groupoff(groupoff), id(id), maxPurchases(maxPurchases) {}
+                    unsigned int id, unsigned int maxPurchases ) : prt(prt), nameServer(nameServer), cardOffice(cardOffice), groupoff(groupoff), id(id), maxPurchases(maxPurchases) {
+    // select number of bottles to purchase
+    unsigned int amount = prng(1, MaxPurchases);
+    
+    // select a favourite flavour
+    unsigned int flavour = prng(0, 3);
+
+    // create WATCard with $5 balance
+    card = cardOffice.create(id, 5);
+
+    // create gift card with value of SodaCost
+    giftCard = groupoff.giftCard();
+
+    // find vending machine location
+    vm = nameServer.getMachine();
+}
 
 void Student::main() {
-    for (;;) {
+    unsigned int purchased = 0;
+    while ( purchased < amount ) {
+        // yield random number 1 - 10 to decide next purchase
+        yield(prng(1, 10));
 
-        yield(prng(1, 11));
+        for (;;) {
 
-        // select number of bottles to purchase
-        
-        // select a flavour
+            try {
+                unsigned int giftCardBalance = giftCard.getBalance(), cardBalance = card.getBalance(), sodaCost = vm.cost();
+                // wait until enough funds
+                // WAITING ON PIAZA: whether a student can use both cards for one purchase
+                while (giftCardBalance < sodaCost && cardBalance < sodaCost ) {
 
-        // create WATCard with $5 balance
+                }
+                
+                // gift cards can only be used once
 
-        // create gift card with value of SodaCost
+                // purchase (Use gift card first)
+                WATCard::FWATCard = giftCard.getBalance() >= sodaCost ? giftCard : card;
 
-        // find vending machine location
-
-        // wait until enough funds
-
-        try {
-            // purchase (Use gift card first)
-            // gift cards can only be used once
-
-            // Courier may lose WATCard, must create new one and buy again (no yield)
-
-            // insufficient funds
-
-            // out of stock
-
-        } catch ( VendingMachine:: free & ) {
-            //  must watch an ad
-            yield(4);
+                vm.buy(flavour, purchaseCard);
+                purchased += 1;
+                prt.print(Printer::Kind::Student, id, 'G', flavour, (int)card->getBalance());
+                break;
+            } catch ( VendingMachine::Free & ) {
+                //  must watch an ad
+                yield(4);
+                purchased += 1;
+                prt.print(Printer::Kind::Student, id, 'a', flavour, get->getBalance());
+                break;
+            } catch ( VendingMachine::Funds & ) {
+                // insufficient funds
+                cardOffice.deposit(id, 5);
+            } catch (VendingMachine::Stock &) {
+                // out of stock change machine and try again
+                vm = cardOffice.getMachine();
+                prt.print(Printer::Kind::Student, id, 'V', vm->getId());
+            } catch( WATCardOffice::Lost & ) {
+                
+            }
         }
-
-
-        // terminate when maxPurchases of favourite flavour
     }
+    prt.print(Printer::Kind::Student, id, 'F');
 }

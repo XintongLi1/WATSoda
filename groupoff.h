@@ -2,6 +2,13 @@
 #define __GROUPOFF_H__
 
 _Task Groupoff {
+	unsigned int numStudents, sodaCost, groupoffDelay, ;
+	bool gifted[numStudents];
+
+	WATCard::FWATCard cards[numStudents];
+
+	Printer & prt;
+	unsigned int getNextCard();
 	void main();
   public:
 	Groupoff( Printer & prt, unsigned int numStudents, unsigned int sodaCost, unsigned int groupoffDelay );

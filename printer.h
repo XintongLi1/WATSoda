@@ -1,5 +1,5 @@
-#ifndef __Q2PRINTER_H__
-#define __Q2PRINTER_H__
+#ifndef __PRINTER_H__
+#define __PRINTER_H__
 
 #include <string>
 

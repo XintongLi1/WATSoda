@@ -2,9 +2,11 @@
 #include <iostream>
 #include <sstream>
 #include <uPRNG.h>
-#include "q2tallyVotes.h"
-#include "q2printer.h"
-#include "q2voter.h"
+#include "printer.h"
+#include "nameServer.h"
+#include "watCardOffice.h"
+#include "groupoff.h"
+#include "student.h"
 
 using namespace std;
 
@@ -35,13 +37,18 @@ int main( int argc, char * argv[] ) {
 		exit( 1 );
 	} // try
 
+	Printer & prt;
+	NameServer & nameServer;
+	WATCardOffice & cardOffice;
+	Groupoff & groupoff;
 
+	Student* studs[NumStudents];
     uProcessor p[processors - 1] __attribute__(( unused )); // create more kernel threads
     {
-		for (int i = 0; i < voters; i += 1) {
-			vs[i] = new Voter(i + 1, votes, tv, printer);
+		for (int i = 0; i < numStudents; i += 1) {
+			studs[i] = new Student(prt, nameServer, cardOffice, groupoff, i + 1, maxPurchases);
 		}
 
-		for (int i = 0; i < voters; i += 1) delete vs[i];
+		for (int i = 0; i < numStudents; i += 1) delete studs[i];
     }
 } // main

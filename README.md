@@ -2,11 +2,11 @@
 
 Chapter 11 administrators
 
-First phase - Monday
+First phase - Monday (Maybe 4, or 9:30)
 
 main
 
-Student Groupoff Vending Machines - Chris (Maybe 4, or 9:30)
+Student Groupoff Vending Machines - Chris 
 
 Parent Courrier Bank WATCardOffice - Xintong
 

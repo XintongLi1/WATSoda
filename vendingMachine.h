@@ -4,11 +4,13 @@
 class Printer, NameServer;
 
 _Task VendingMachine {
-	unsigned int id, sodaCost, * stock;
-	bool restocking;
+	unsigned int id, sodaCost, stock[numFlavours](0);
+	bool restocking = false;
 
 	Printer & prt;
 	NameServer & nameServer;
+	BottlingPlant::Flavours purchaseFlavour;
+	WATCard & purchaseCard;
 	void main();
   public:
 	_Event Free {};						// free, advertisement
