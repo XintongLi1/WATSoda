@@ -74,7 +74,7 @@ void WATCardOffice::main(){
 }
 
 WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount ) {
-    newJob = new Job(Args{sid, amount, new WATCard()});
+    Job * newJob = new Job(Args{sid, amount, new WATCard()});
     jobs.push(newJob);
     // create call complete
     prt.print(Printer::WATCardOffice, 'C', sid, amount);
@@ -83,7 +83,7 @@ WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount )
 
  
 WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount, WATCard * card ) {
-    newJob = new Job(Args{sid, amount, card});
+    Job * newJob = new Job(Args{sid, amount, card});
     jobs.push(newJob);
     // transfer call complete
     prt.print(Printer::WATCardOffice, 'T', sid, amount);
