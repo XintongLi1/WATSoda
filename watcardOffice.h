@@ -1,18 +1,7 @@
 #ifndef __WATCARDOFFICE_H__
 #define __WATCARDOFFICE_H__
 
-class WATCard {
-	WATCard( const WATCard & ) = delete;	// prevent copying
-	WATCard( const WATCard && ) = delete;
-	WATCard & operator=( const WATCard & ) = delete;
-	WATCard & operator=( const WATCard && ) = delete;
-  public:
-	typedef Future_ISM<WATCard *> FWATCard;	// future watcard pointer
-	WATCard();
-	void deposit( unsigned int amount );
-	void withdraw( unsigned int amount );
-	unsigned int getBalance();
-};
+#include "watcard.h"
 
 _Task WATCardOffice {
 	struct Job {							// marshalled arguments and return future
