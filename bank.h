@@ -5,9 +5,9 @@ class Student;
 
 _Monitor Bank {
 	unsigned int numStudents;
-	unsigned int * studentArray;
+	unsigned int * studentBalances;
+
   public:
-    _Event InsufficientFunds;
 	Bank( unsigned int numStudents );
 	~Bank();
 	void deposit( unsigned int id, unsigned int amount );
