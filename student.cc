@@ -30,16 +30,14 @@ void Student::main() {
 
             try {
                 unsigned int giftCardBalance = giftCard.getBalance(), cardBalance = card.getBalance(), sodaCost = vm.cost();
+                
                 // wait until enough funds
-                // WAITING ON PIAZA: whether a student can use both cards for one purchase
                 while (giftCardBalance < sodaCost && cardBalance < sodaCost ) {
 
                 }
                 
-                // gift cards can only be used once
-
                 // purchase (Use gift card first)
-                WATCard::FWATCard = giftCard.getBalance() >= sodaCost ? giftCard : card;
+                WATCard::FWATCard purchaseCard = giftCardBalance >= sodaCost ? giftCard : card;
 
                 vm.buy(flavour, purchaseCard);
                 purchased += 1;
@@ -53,13 +51,16 @@ void Student::main() {
                 break;
             } catch ( VendingMachine::Funds & ) {
                 // insufficient funds
-                cardOffice.deposit(id, 5);
+                cardOffice.transfer(id, 5 + vendingMachine->cost(), card);
             } catch (VendingMachine::Stock &) {
                 // out of stock change machine and try again
                 vm = cardOffice.getMachine();
                 prt.print(Printer::Kind::Student, id, 'V', vm->getId());
             } catch( WATCardOffice::Lost & ) {
-                
+                // lost card try again
+                prt.print(Printer::Kind::Student, id, 'L');
+                // create WATCard with $5 balance
+                card = cardOffice.create(id, 5);
             }
         }
     }

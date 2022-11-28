@@ -2,11 +2,16 @@
 #include <iostream>
 #include <sstream>
 #include <uPRNG.h>
+
+#include "config.h"
 #include "printer.h"
 #include "nameServer.h"
+#include "bank.h"
 #include "watCardOffice.h"
 #include "groupoff.h"
+#include "parent.h"
 #include "student.h"
+#include "vendingMachine.h"
 
 using namespace std;
 
@@ -21,14 +26,14 @@ static intmax_t convert( const char * str ) {			// convert C string to integer
 } // convert
 
 int main( int argc, char * argv[] ) {
-	istream * config = new ifstream("soda.config");
+	char * config = "soda.config";
 	intmax_t seed, processors = 1;				// defaults
 
 	try {
 		switch ( argc ) {
-          case 4: processors = if ( strcmp( argv[2], "d" ) != 0 ) { convert( argv[3] ); if ( processors <= 0 ) throw 1; }
+          case 4: processors = if ( strcmp( argv[3], "d" ) != 0 ) { convert( argv[3] ); if ( processors <= 0 ) throw 1; }
 		  case 3: seed = if ( strcmp( argv[2], "d" ) != 0 ) { convert( argv[2] ); if ( seed <= 0 ) throw 1; else set_seed(seed); }
-		  case 2: config = if ( strcmp( argv[2], "d" ) != 0 ) { delete config; new ifstream( argv[1] ); if ( config.fail() ) { cerr << "Error! Could not open input file \"" << argv[3] << "\"" << endl; throw 1; }}
+		  case 2: config = if ( strcmp( argv[1], "d" ) != 0 ) { config = argv[1]; }
 		  case 1: break;								// use defaults
 		  default: throw 1;
 		} // switch
@@ -37,18 +42,33 @@ int main( int argc, char * argv[] ) {
 		exit( 1 );
 	} // try
 
-	Printer & prt;
-	NameServer & nameServer;
-	WATCardOffice & cardOffice;
-	Groupoff & groupoff;
+	ConfigParms cparms;
 
-	Student* studs[NumStudents];
+	processConfigFile(config, &cparms);
+
+	Printer prt(cparms.numStudents, cparms.numVendingMachines, cparms.numCouriers);
+	NameServer nameServer(prt, cparms.numVendingMachines, cparms.numStudents);
+	Bank bank(cparms.numStudents);
+	WATCardOffice cardOffice(prt, bank, cparms.numCouriers);
+	Groupoff groupoff(prt, cparms.numStudents, cparms.sodaCost, cparms.groupoffDelay);
+
+	Parent parent(prt, bank, cparms.numStudents, cparms.parentalDelay)
+
+	Student* studs[cparms.numStudents];
+	VendingMachine* vends[cparms.numVendingMachines];
+
     uProcessor p[processors - 1] __attribute__(( unused )); // create more kernel threads
     {
-		for (int i = 0; i < numStudents; i += 1) {
-			studs[i] = new Student(prt, nameServer, cardOffice, groupoff, i + 1, maxPurchases);
+		for (int i = 0; i < cparms.numStudents; i += 1) {
+			studs[i] = new Student(prt, nameServer, cardOffice, groupoff, i + 1, cparms.maxPurchases);
 		}
 
-		for (int i = 0; i < numStudents; i += 1) delete studs[i];
+		for (int i = 0; i < cparms.numVendingMachines; i += 1) {
+			vends[i] = new VendingMachine(prt, nameServer, i + 1, cparms.sodaCost);
+		}
+
+		for (int i = 0; i < cparms.numStudents; i += 1) delete studs[i];
+
+		for (int i = 0; i < cparms.numVendingMachines; i += 1) delete vends[i];
     }
 } // main
