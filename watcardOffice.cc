@@ -1,7 +1,7 @@
 #include "watcardOffice.h"
 
 
-WATCardOffice::Courier Courier(unsigned int id, WATCardOffice * office, Printer & prt, Bank & bank) :
+WATCardOffice::Courier::Courier(unsigned int id, WATCardOffice * office, Printer & prt, Bank & bank) :
     id(id), office(office), prt(prt), bank(bank) {}
 
 void WATCardOffice::Courier::main(){
@@ -63,7 +63,7 @@ void WATCardOffice::main(){
             }
             break;
         }
-        _Accept( create || transfer );
+        or _Accept( create || transfer );
         or _When (!jobs.empty()) _Accept ( requestWork ){
             // request work call complete
             prt.print(Printer::WATCardOffice, 'W');
