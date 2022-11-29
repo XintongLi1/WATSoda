@@ -3,9 +3,9 @@
 
 _Task Groupoff {
 	unsigned int numStudents, sodaCost, groupoffDelay ;
-	bool gifted[numStudents];
+	bool * gifted;
 
-	WATCard::FWATCard cards[numStudents];
+	WATCard::FWATCard * cards;
 
 	Printer & prt;
 	unsigned int getNextCard();

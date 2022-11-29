@@ -1,13 +1,14 @@
 #ifndef __VENDINGMACHINE_H__
 #define __VENDINGMACHINE_H__
 
-_Task BottlingPlant;
+#include "bottlingPlant.h"
+
 _Task NameServer;
 class Printer;
 class WATCard;
 
 _Task VendingMachine {
-	unsigned int id, sodaCost, stock[numFlavours](0);
+	unsigned int id, sodaCost, * stock;
 	bool restocking = false;
 
 	Printer & prt;

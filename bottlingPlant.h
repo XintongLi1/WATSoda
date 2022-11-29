@@ -11,7 +11,7 @@ _Task BottlingPlant {
 	NameServer & nameServer;
 	void main();
   public:
-	enum Flavours { ..., NUM_OF_FLAVOURS };	// flavours of soda (YOU DEFINE)
+	enum Flavours { BluesBlackCherry, ClassicCreamSoda, RockRootBeer, JazzLime, NUM_OF_FLAVOURS = 4 };
 	_Event Shutdown {};					// shutdown plant
 	BottlingPlant( Printer & prt, NameServer & nameServer, unsigned int numVendingMachines,
 				 unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour,

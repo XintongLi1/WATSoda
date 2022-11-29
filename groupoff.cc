@@ -1,7 +1,17 @@
 #include "groupoff.h"
 
 Groupoff::Groupoff( unsigned int numStudents, unsigned int sodaCost, unsigned int groupoffDelay ) : prt(prt), numStudents(numStudents), sodaCost(sodeCost), groupOffDelay(groupoffDelay) {
+    cards = new WATCard[numStudents];
+    gifted = new Bool[numStudents];
     prt.print(Printer::Kind::Groupoff, 'S');
+}
+
+
+Groupoff::~Groupoff() {
+    for (int i = 0; i < numStudents) {
+        if (gifted[i]) delete cards[i];
+    }
+    delete gifted;
 }
 
 unsigned int Groupoff::getNextCard(unsigned int cardsCreated, unsigned int cardsGifted) {
@@ -10,12 +20,6 @@ unsigned int Groupoff::getNextCard(unsigned int cardsCreated, unsigned int cards
     while (gifted[baseIndex]) baseIndex = (baseIndex + 1) % cardsCreated;
 
     return baseIndex;
-}
-
-Groupoff::~Groupoff() {
-    for (int i = 0; i < numStudents) {
-        if (gifted[i]) delete cards[i];
-    }
 }
 
 WATCard::FWATCard Groupoff::giftCard() {
