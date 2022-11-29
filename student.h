@@ -1,7 +1,12 @@
 #ifndef __STUDENT_H__
 #define __STUDENT_H__
 
-class Printer, NameServer, WATCardOffice, Groupoff;
+class Printer;
+_Task NameServer;
+_Task WATCardOffice;
+_Task Groupoff;
+class WATCard;
+_Task VendingMachine;
 
 _Task Student {
 	unsigned int id, maxPurchases, amount, flavour;

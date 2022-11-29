@@ -1,4 +1,6 @@
 #include "watcardOffice.h"
+#include "bank.h"
+#include "printer.h"
 
 
 WATCardOffice::Courier::Courier(unsigned int id, WATCardOffice * office, Printer & prt, Bank & bank) :

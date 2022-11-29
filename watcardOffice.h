@@ -5,6 +5,9 @@
 #include <uPRNG.h>
 #include <queue>
 
+class Printer;
+class Bank;
+
 _Task WATCardOffice {
 	Printer & prt;
 	Bank & bank;
@@ -13,9 +16,9 @@ _Task WATCardOffice {
 	struct Args {
 		unsigned int sid, amount;
 		WATCard * card;
-	}
-
-	struct Job {							// marshalled arguments and return future
+	};
+	
+	struct Job {						// marshalled arguments and return future
 		Args args;							// call arguments (YOU DEFINE "Args")
 		WATCard::FWATCard result;			// return future
 		Job( Args args ) : args( args ) {}
@@ -36,7 +39,7 @@ _Task WATCardOffice {
 	};
 
 	Courier ** couriers;
-	queue<Job *> jobs;		// a list of jobs
+	std::queue<Job *> jobs;		// a list of jobs
 
 	void main();
   public:

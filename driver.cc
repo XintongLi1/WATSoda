@@ -7,11 +7,12 @@
 #include "printer.h"
 #include "nameServer.h"
 #include "bank.h"
-#include "watCardOffice.h"
+#include "watcardOffice.h"
 #include "groupoff.h"
 #include "parent.h"
 #include "student.h"
 #include "vendingMachine.h"
+#include <string>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ static intmax_t convert( const char * str ) {			// convert C string to integer
 } // convert
 
 int main( int argc, char * argv[] ) {
-	char * config = "soda.config";
+	string config = "soda.config";
 	intmax_t seed, processors = 1;				// defaults
 
 	try {

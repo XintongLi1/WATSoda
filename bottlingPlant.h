@@ -1,7 +1,8 @@
 #ifndef __BOTTLINGPLANT_H__
 #define __BOTTLINGPLANT_H__
 
-class Printer, NameServer;
+class Printer;
+_Task NameServer;
 
 _Task BottlingPlant {
 	unsigned int numVendingMachines, maxShippedPerFlavour, maxStockPerFlavour, timeBetweenShipments;

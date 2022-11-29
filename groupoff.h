@@ -2,7 +2,7 @@
 #define __GROUPOFF_H__
 
 _Task Groupoff {
-	unsigned int numStudents, sodaCost, groupoffDelay, ;
+	unsigned int numStudents, sodaCost, groupoffDelay ;
 	bool gifted[numStudents];
 
 	WATCard::FWATCard cards[numStudents];

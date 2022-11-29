@@ -1,7 +1,8 @@
 #ifndef __PARENT_H__
 #define __PARENT_H__
 
-class Printer, Bank;
+class Printer;
+class Bank;
 
 _Task Parent {
 	unsigned int numStudents, parentalDelay;

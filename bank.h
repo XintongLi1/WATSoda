@@ -1,8 +1,6 @@
 #ifndef __BANK_H__
 #define __BANK_H__
 
-class Student;
-
 _Monitor Bank {
 	unsigned int numStudents;
 	unsigned int * studentBalances;
