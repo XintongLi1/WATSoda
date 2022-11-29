@@ -45,7 +45,7 @@ int main( int argc, char * argv[] ) {
 
 	ConfigParms cparms;
 
-	processConfigFile(&*config.begin(), cparms);
+	processConfigFile(config.c_str(), cparms);
 
 	Printer prt(cparms.numStudents, cparms.numVendingMachines, cparms.numCouriers);
 	NameServer nameServer(prt, cparms.numVendingMachines, cparms.numStudents);

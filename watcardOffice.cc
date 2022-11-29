@@ -8,26 +8,26 @@ WATCardOffice::Courier::Courier(unsigned int id, WATCardOffice * office, Printer
 
 void WATCardOffice::Courier::main(){
     //  start
-    prt.print(Printer::Courier, 'S');
+    prt.print(Printer::Courier, id, 'S');
     for (;;){
         Job * job = office->requestWork();
         if (job == nullptr){
             // end 
-            prt.print(Printer::Courier, 'F');
+            prt.print(Printer::Courier, id, 'F');
             return;
         }
         if (cprng(6) == 0){
             // lost watcard
-            prt.print(Printer::Courier, 'L', job->args.sid);
+            prt.print(Printer::Courier, id, 'L', job->args.sid);
             job->result.delivery(new Lost);
             delete job->args.card;
         } else {
             // start funds transfer
-            prt.print(Printer::Courier, 't', jobs->args.sid, jobs->args.amount);
+            prt.print(Printer::Courier, id, 't', jobs->args.sid, jobs->args.amount);
             bank.withdraw(jobs->args.sid, jobs->args.amount);
             job->card->deposit(job->args.amount);
             // complete funds transfer
-            prt.print(Printer::Courier, 'T', jobs->args.sid, jobs->args.amount);
+            prt.print(Printer::Courier, id, 'T', jobs->args.sid, jobs->args.amount);
             job->result.delivery(job->args.card);
         }
         delete job;
