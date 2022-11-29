@@ -61,11 +61,11 @@ int main( int argc, char * argv[] ) {
     uProcessor p[processors - 1] __attribute__(( unused )); // create more kernel threads
     {
 		for (unsigned int i = 0; i < cparms.numStudents; i += 1) {
-			students[i] = new Student(prt, nameServer, cardOffice, groupoff, i + 1, cparms.maxPurchases);
+			students[i] = new Student(prt, nameServer, cardOffice, groupoff, i, cparms.maxPurchases);
 		}
 
 		for (unsigned int i = 0; i < cparms.numVendingMachines; i += 1) {
-			vends[i] = new VendingMachine(prt, nameServer, i + 1, cparms.sodaCost);
+			vends[i] = new VendingMachine(prt, nameServer, i, cparms.sodaCost);
 		}
 
 		for (unsigned int i = 0; i < cparms.numStudents; i += 1) delete students[i];
