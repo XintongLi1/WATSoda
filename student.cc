@@ -49,7 +49,7 @@ void Student::main() {
                     break;
                 } catch (VendingMachine::Stock &) {
                     // out of stock change machine and try again
-                    vm = cardOffice.getMachine();
+                    vm = nameServer.getMachine();
                     prt.print(Printer::Kind::Student, id, 'V', vm->getId());
                 } // try
             } // if (giftcard ...)
@@ -70,10 +70,10 @@ void Student::main() {
                     } catch ( VendingMachine::Funds & ) {
                         card.reset();
                         // insufficient funds
-                        card = cardOffice.transfer(id, 5 + vendingMachine->cost(), thisCard);
+                        card = cardOffice.transfer(id, 5 + vm->cost(), thisCard);
                     } catch (VendingMachine::Stock &) {
                         // out of stock change machine and try again
-                        vm = cardOffice.getMachine();
+                        vm = nameServer.getMachine();
                         prt.print(Printer::Kind::Student, id, 'V', vm->getId());
                     } catch( WATCardOffice::Lost & ) {
                         // lost watcard during transfer, try again
