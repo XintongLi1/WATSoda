@@ -1,21 +1,24 @@
 #ifndef __STUDENT_H__
 #define __STUDENT_H__
 
+#include "watcard.h"
+#include "bottlingPlant.h"
+
 class Printer;
 _Task NameServer;
 _Task WATCardOffice;
 _Task Groupoff;
-class WATCard;
 _Task VendingMachine;
 
 _Task Student {
-	unsigned int id, maxPurchases, amount, flavour;
 	Printer & prt;
 	NameServer & nameServer;
 	WATCardOffice & cardOffice;
-	WATCard::FWATCard & card, & giftCard;
-	WATCard * thisCard = nullptr;
 	Groupoff & groupoff;
+	unsigned int id, maxPurchases, amount;
+	BottlingPlant::Flavours flavour;
+	WATCard::FWATCard card, giftCard;
+	WATCard * thisCard = nullptr;
 
 	VendingMachine * vm;
 

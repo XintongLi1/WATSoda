@@ -8,13 +8,14 @@ class Printer;
 class WATCard;
 
 _Task VendingMachine {
+	Printer & prt;
+	NameServer & nameServer;
 	unsigned int id, sodaCost, * stock;
 	bool restocking = false;
 
-	Printer & prt;
-	NameServer & nameServer;
 	BottlingPlant::Flavours purchaseFlavour;
-	WATCard & purchaseCard;
+	WATCard * purchaseCard;
+	uCondition cond;
 	void main();
   public:
 	_Event Free {};						// free, advertisement

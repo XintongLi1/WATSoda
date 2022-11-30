@@ -5,10 +5,9 @@ class Printer;
 class Bank;
 
 _Task Parent {
-	unsigned int numStudents, parentalDelay;
-
 	Printer & prt;
 	Bank & bank;
+	unsigned int numStudents, parentalDelay;
 	void main();
   public:
 	Parent( Printer & prt, Bank & bank, unsigned int numStudents, unsigned int parentalDelay );

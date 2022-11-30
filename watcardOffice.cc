@@ -23,11 +23,11 @@ void WATCardOffice::Courier::main(){
             delete job->args.card;
         } else {
             // start funds transfer
-            prt.print(Printer::Courier, id, 't', jobs->args.sid, jobs->args.amount);
-            bank.withdraw(jobs->args.sid, jobs->args.amount);
-            job->card->deposit(job->args.amount);
+            prt.print(Printer::Courier, id, 't', job->args.sid, job->args.amount);
+            bank.withdraw(job->args.sid, job->args.amount);
+            job->args.card->deposit(job->args.amount);
             // complete funds transfer
-            prt.print(Printer::Courier, id, 'T', jobs->args.sid, jobs->args.amount);
+            prt.print(Printer::Courier, id, 'T', job->args.sid, job->args.amount);
             job->result.delivery(job->args.card);
         }
         delete job;
@@ -92,7 +92,7 @@ WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount
     return newJob->result;
 }
    
-Job * WATCardOffice::requestWork() {
+WATCardOffice::Job * WATCardOffice::requestWork() {
     if (jobs.empty()){  // no job available
         return nullptr;
     }

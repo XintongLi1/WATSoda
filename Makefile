@@ -1,28 +1,28 @@
-CXX = u++					# compiler
+CXX = u++ 				# compiler
 CXXFLAGS = -g -multi -O2 -Wall -Wextra  \
-MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	# makefile name
 
 OBJECTS = driver.o printer.o bank.o bottlingPlant.o  groupoff.o parent.o student.o truck.o vendingMachine.o watcardOffice.o watcard.o # list of object files for question 3 prefixed with "q3"
 EXEC = soda
 
 DEPENDS = ${OBJECTS:.o=.d}			# substitute ".o" with ".d"
 
-#############################################################
-
 .PHONY : all clean
+.ONESHELL :
 
-all : ${EXEC}					# build all executables
+#############################################################
 
 .PHONY : ${EXEC}
+
 ${EXEC} : ${OBJECTS}
-	${MAKE} ${CXX} ${CXXFLAGS}  -o ${EXEC}
+	${CXX} ${CXXFLAGS} -o $@ ${OBJECTS}
+
+%.o: %.cc
+	u++ -c ${CXXFLAGS} $< -o $@
 
 
 #############################################################
-
-${OBJECTS} : ${MAKEFILE_NAME}			# OPTIONAL : changes to this file => recompile
 
 -include ${DEPENDS}				# include *.d files containing program dependences
 
 clean :						# remove files that can be regenerated
-	rm -f *.d *.o ${OBJECTS}
+	rm -f *.d *.o ${EXEC}

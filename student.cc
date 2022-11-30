@@ -1,9 +1,14 @@
 #include "student.h"
+#include "groupoff.h"
+#include "watcardOffice.h"
+#include "vendingMachine.h"
+#include "nameServer.h"
+#include "printer.h"
 
 Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOffice, Groupoff & groupoff,
                     unsigned int id, unsigned int maxPurchases ) : prt(prt), nameServer(nameServer), cardOffice(cardOffice), groupoff(groupoff), id(id), maxPurchases(maxPurchases) {
     // select number of bottles to purchase
-    unsigned int amount = prng(1, MaxPurchases);
+    unsigned int amount = prng(1, maxPurchases);
     
     // select a favourite flavour
     unsigned int flavour = prng(0, 3);
@@ -35,7 +40,7 @@ void Student::main() {
             if ( giftCard.available() && giftCard()->getBalance() >= sodaCost) { // use giftcard
                 try {
                     // purchase (Use gift card first if it was not used)
-                    vm.buy(flavour, *giftCard());
+                    vm->buy(flavour, *giftCard());
                     prt.print(Printer::Kind::Student, id, 'G', flavour, giftCard()->getBalance());
                     delete giftCard();
                     giftCard.reset();   // to prevent further usage  
@@ -49,7 +54,7 @@ void Student::main() {
                     break;
                 } catch (VendingMachine::Stock &) {
                     // out of stock change machine and try again
-                    vm = nameServer.getMachine();
+                    vm = nameServer.getMachine(id);
                     prt.print(Printer::Kind::Student, id, 'V', vm->getId());
                 } // try
             } // if (giftcard ...)
@@ -57,7 +62,7 @@ void Student::main() {
                 try {   // ignore watcard creation throwing WATCardOffice::Lost & 
                     thisCard = card();  
                     try {   // watcard creation is successful
-                        vm.buy(flavour, *thisCard);
+                        vm->buy(flavour, *thisCard);
                         prt.print(Printer::Kind::Student, id, 'B', flavour, card()->getBalance());
                         purchased += 1;
                         break;
@@ -73,7 +78,7 @@ void Student::main() {
                         card = cardOffice.transfer(id, 5 + vm->cost(), thisCard);
                     } catch (VendingMachine::Stock &) {
                         // out of stock change machine and try again
-                        vm = nameServer.getMachine();
+                        vm = nameServer.getMachine(id);
                         prt.print(Printer::Kind::Student, id, 'V', vm->getId());
                     } catch( WATCardOffice::Lost & ) {
                         // lost watcard during transfer, try again

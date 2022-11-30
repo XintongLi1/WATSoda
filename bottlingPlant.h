@@ -5,10 +5,10 @@ class Printer;
 _Task NameServer;
 
 _Task BottlingPlant {
-	unsigned int numVendingMachines, maxShippedPerFlavour, maxStockPerFlavour, timeBetweenShipments;
-
 	Printer & prt;
 	NameServer & nameServer;
+	unsigned int numVendingMachines, maxShippedPerFlavour, maxStockPerFlavour, timeBetweenShipments;
+	
 	void main();
   public:
 	enum Flavours { BluesBlackCherry, ClassicCreamSoda, RockRootBeer, JazzLime, NUM_OF_FLAVOURS = 4 };

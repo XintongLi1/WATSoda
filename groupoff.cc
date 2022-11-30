@@ -1,14 +1,16 @@
 #include "groupoff.h"
+#include "printer.h"
 
-Groupoff::Groupoff( unsigned int numStudents, unsigned int sodaCost, unsigned int groupoffDelay ) : prt(prt), numStudents(numStudents), sodaCost(sodeCost), groupOffDelay(groupoffDelay) {
-    cards = new WATCard[numStudents];
-    gifted = new Bool[numStudents];
+Groupoff::Groupoff( Printer & prt, unsigned int numStudents, unsigned int sodaCost, unsigned int groupoffDelay ) : prt(prt), numStudents(numStudents), sodaCost(sodaCost), groupoffDelay(groupoffDelay) {
+    fcards = new WATCard::FWATCard[numStudents];
+    cards = new WATCard*[numStudents];
+    gifted = new bool[numStudents];
     prt.print(Printer::Kind::Groupoff, 'S');
 }
 
 
 Groupoff::~Groupoff() {
-    for (int i = 0; i < numStudents) {
+    for (unsigned int i = 0; i < numStudents; i += 1) {
         if (gifted[i]) delete cards[i];
     }
     delete gifted;
@@ -24,13 +26,12 @@ unsigned int Groupoff::getNextCard(unsigned int cardsCreated, unsigned int cards
 
 WATCard::FWATCard Groupoff::giftCard() {
     WATCard::FWATCard c;
-    cards.push_back(c);
+    fcards[cardsCreated] = c;
     return c;
 }
 
 
 void Groupoff::main() {
-    unsigned int cardsCreated = 0, cardsGifted = 0;
     // first accept a call from all students to recieve a future giftcard
     while (cardsCreated < numStudents) {
         _Accept(giftCard) cardsCreated += 1;
@@ -47,11 +48,12 @@ void Groupoff::main() {
                 yield(groupoffDelay);
 
                 // select a random future giftcard - non repeating
-                unsigned int index = getNextCard(cardsGifted);
+                unsigned int index = getNextCard(cardsCreated, cardsGifted);
 
                 // create real giftcard and give sodaCost
-                cards[index] = new WATCard::WATCard();
-                cards[index].deposit(sodaCost);
+                cards[index] = new WATCard();
+                cards[index]->deposit(sodaCost);
+                gifted[index] = true;
 
                 prt.print(Printer::Kind::Groupoff, 'D', sodaCost);
 

@@ -1,18 +1,28 @@
 #include "truck.h"
+#include "nameServer.h"
+#include "bottlingPlant.h"
+#include "vendingMachine.h"
 
 Truck::Truck( Printer & prt, NameServer & nameServer, BottlingPlant & plant,
-		   unsigned int numVendingMachines, unsigned int maxStockPerFlavour ) : prt(prt), nameServer(nameServer), plan(plant), numVendingMachines(numVendingMachines), maxStockPerFlavour(maxStockPerFlavour) {}
+		   unsigned int numVendingMachines, unsigned int maxStockPerFlavour ) : prt(prt), nameServer(nameServer), plant(plant), numVendingMachines(numVendingMachines), maxStockPerFlavour(maxStockPerFlavour) {}
 
 
 void Truck::main() {
+    // get all vending machines
+    vms = nameServer.getMachineList();
+
     for (;;) {
         // Tims run
-        yield(prng(1, 11));
+        yield(prng(1, 10));
 
 
         try {
-            shipment = plant.getShipment();
-        } catch ( ShuttingDown &) { 
+            // throw away old bottles
+            cargo = {0};
+
+            // get new shipment
+            plant.getShipment(cargo);
+        } catch ( BottlingPlant::Shutdown &) { 
             return;
         }
 

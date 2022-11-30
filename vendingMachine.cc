@@ -1,4 +1,7 @@
 #include "vendingMachine.h"
+#include "watcard.h"
+#include "nameServer.h"
+#include "printer.h"
 
 VendingMachine::VendingMachine( Printer & prt, NameServer & nameServer, unsigned int id, unsigned int sodaCost ) : prt(prt), nameServer(nameServer), id(id), sodaCost(sodaCost) {
     // register with NameServer
@@ -11,15 +14,19 @@ VendingMachine::~VendingMachine() {
 
 void VendingMachine::buy( BottlingPlant::Flavours flavour, WATCard & card ) {
     purchaseFlavour = flavour;
-    purchaseCard = card;
+    purchaseCard = &card;
     try {
         cond.wait();
-    } _CatchResume(_Event & e) {
-        _Throw e;
+    } _CatchResume(Funds & funds) {
+        _Throw funds;
+    } _CatchResume(Stock & stock) {
+        _Throw stock;
+    }_CatchResume(Free & free) {
+        _Throw free;
     }
 }
 
-unsigned int * VendingMachine::inventory() __attribute__(( warn_unused_result )) {
+unsigned int * VendingMachine::inventory() {
     restocking = true;
     return stock;
 }
@@ -28,11 +35,11 @@ void VendingMachine::restocked() {
     restocking = false;
 }
 
-unsigned int cost() const {
+unsigned int VendingMachine::cost() const {
     return sodaCost;
 }
 
-unsigned int getId() const {
+unsigned int VendingMachine::getId() const {
     return id;
 }
 
@@ -44,20 +51,20 @@ void VendingMachine::main() {
         or _Accept( inventory ) prt.print(Printer::Kind::Vending, id, 'r');
         or _When ( !restocking ) _Accept( buy ) {
             // check for funds
-            if (card.getBalance < sodaCost) _Resume Funds{} _At Resumer;
+            if (purchaseCard->getBalance() < sodaCost) _Resume Funds{};
 
             // check in stock
-            else if (stock[flavour] == 0) _Resume Stock{} _At Resumer;
+            else if (stock[purchaseFlavour] == 0) _Resume Stock{};
 
             // 1 in 5 to give free
-            else if (prng(5) == 4) _Resume Free{} _At Resumer;
+            else if (prng(5) == 4) _Resume Free{};
 
             else {
                 // charge card
-                purchaseCard.withdraw(sodaCost);
+                purchaseCard->withdraw(sodaCost);
                 // decrease stock
                 stock[purchaseFlavour] -= 1;
-                prt.print( Printer::Kind::Vending, id, 'B', purchaseFlavour, stocks[purchaseFlavour]);
+                prt.print( Printer::Kind::Vending, id, 'B', purchaseFlavour, stock[purchaseFlavour]);
             }
 
             cond.signalBlock();
