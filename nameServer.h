@@ -2,8 +2,14 @@
 #define __NAMESERVER_H__
 
 _Task VendingMachine;
+_Monitor Printer;
 
 _Task NameServer {
+	Printer & prt;
+	unsigned int numVendingMachines, numStudents;
+
+	VendingMachine ** vms;
+
 	void main();
   public:
 	NameServer( Printer & prt, unsigned int numVendingMachines, unsigned int numStudents );
