@@ -64,12 +64,12 @@ void WATCardOffice::main(){
                 _Accept ( requestWork );
             }
             break;
-        }
-        or _Accept( create || transfer );
+        }        
         or _When (!jobs.empty()) _Accept ( requestWork ){
             // request work call complete
             prt.print(Printer::WATCardOffice, 'W');
         }
+        or _Accept( create || transfer );
     }
     // finish
     prt.print(Printer::WATCardOffice, 'F');

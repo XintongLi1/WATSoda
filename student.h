@@ -14,6 +14,7 @@ _Task Student {
 	NameServer & nameServer;
 	WATCardOffice & cardOffice;
 	WATCard::FWATCard & card, & giftCard;
+	WATCard * thisCard = nullptr;
 	Groupoff & groupoff;
 
 	VendingMachine * vm;
