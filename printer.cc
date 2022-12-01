@@ -15,7 +15,7 @@ Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, uns
 
     // print starting message
     cout << "Parent\t";
-    cout << "Groupoff\t";
+    cout << "Gropoff\t";
     cout << "WATOff\t";
     cout << "Names\t";
     cout << "Truck\t";
@@ -36,7 +36,7 @@ Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, uns
 
     cout << endl;
 
-    for (unsigned int i = 0; i <= total; i += 1) {
+    for (unsigned int i = 0; i < total; i += 1) {
         cout << "******* ";
     }
 
@@ -53,7 +53,7 @@ Printer::~Printer(){
 void Printer::print( Kind kind, char state ) {
     int index = getIndex(kind);
     if (buffer[index].filled) { flush(); }
-    buffer[index].msg = to_string(state);
+    buffer[index].msg = state;
     buffer[index].filled = true;
 }
 
@@ -63,7 +63,8 @@ void Printer::print( Kind kind, char state ) {
 void Printer::print( Kind kind, char state, unsigned int value1 ) {
     int index = getIndex(kind);
     if (buffer[index].filled) { flush(); }
-    buffer[index].msg = to_string(state) + to_string(value1);
+    buffer[index].msg = state;
+    buffer[index].msg += to_string(value1);
     buffer[index].filled = true;
 }
 
@@ -71,7 +72,8 @@ void Printer::print( Kind kind, char state, unsigned int value1 ) {
 void Printer::print( Kind kind, char state, unsigned int value1, unsigned int value2 ) {
     int index = getIndex(kind);
     if (buffer[index].filled) { flush(); }
-    buffer[index].msg = to_string(state) + to_string(value1) + "," + to_string(value2);
+    buffer[index].msg = state;
+    buffer[index].msg += to_string(value1) + "," + to_string(value2);
     buffer[index].filled = true;
 }
 
@@ -79,21 +81,23 @@ void Printer::print( Kind kind, char state, unsigned int value1, unsigned int va
 void Printer::print( Kind kind, unsigned int lid, char state ) {
     int index = getIndex(kind, lid);
     if (buffer[index].filled) { flush(); }
-    buffer[index].msg = to_string(state);
+    buffer[index].msg = state;
     buffer[index].filled = true;
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, unsigned int value1 ) {
     int index = getIndex(kind, lid);
     if (buffer[index].filled) { flush(); }
-    buffer[index].msg = to_string(state) + to_string(value1);
+    buffer[index].msg = state;
+    buffer[index].msg += to_string(value1);
     buffer[index].filled = true;
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, unsigned int value1, unsigned int value2 ) {
     int index = getIndex(kind, lid);
     if (buffer[index].filled) { flush(); }
-    buffer[index].msg = to_string(state) + to_string(value1) + "," + to_string(value2);
+    buffer[index].msg = state;
+    buffer[index].msg += to_string(value1) + "," + to_string(value2);
     buffer[index].filled = true;
 }
 
