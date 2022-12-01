@@ -11,7 +11,7 @@ Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOf
     unsigned int amount = prng(1, maxPurchases);
     
     // select a favourite flavour
-    unsigned int flavour = prng(0, 3);
+    flavour = (BottlingPlant::Flavours)prng(0, 3);
     prt.print(Printer::Kind::Student, id, 'S', flavour, amount);
 
     // create WATCard with $5 balance

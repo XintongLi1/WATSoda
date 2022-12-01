@@ -1,21 +1,55 @@
 #include "nameServer.h"
 #include "vendingMachine.h"
+#include "printer.h"
+#include <iostream>
+using namespace std;
 
 NameServer::NameServer( Printer & prt, unsigned int numVendingMachines, unsigned int numStudents ) : prt(prt), numVendingMachines(numVendingMachines), numStudents(numStudents) {
     vms = new VendingMachine*[numVendingMachines];
-    // sodaCost?
-    unsigned int sodaCost = 1;
-    for (unsigned int i = 0; i < numVendingMachines; i += 1) vms[i] = new VendingMachine(prt, *this, i, sodaCost);
+    mapVM = new unsigned int[numStudents];
+    for (unsigned int i = 0; i < numStudents; i += 1) {
+        mapVM[i] = i % numVendingMachines;
+    }
 }
+
+NameServer::~NameServer(){
+    delete [] vms;
+    delete [] mapVM;
+}
+
 
 void NameServer::main() {
+    cout << "start nameserver main" << endl;
+    // start
+    prt.print( Printer::NameServer, 'S');
+    for (;;){
+        if (registercnt < numVendingMachines) _Accept(VMregister);
+        else {
+            cout << "nameserver registration done" << endl;
+            _Accept ( ~NameServer ) { break; }
+            or _Accept( getMachine || getMachineList );
+        }
+    }
 
+    // finish
+    prt.print( Printer::NameServer, 'F');
 }
+
 	
-void NameServer::VMregister( VendingMachine * vendingmachine ) {}
+void NameServer::VMregister( VendingMachine * vendingmachine ) {
+    vms[registercnt] = vendingmachine;
+    cout << "nameserver register" << endl;
+    ++registercnt;
+    // register vending machine
+    prt.print( Printer::NameServer, 'R', vendingmachine->getId());
+}
 
 VendingMachine * NameServer::getMachine( unsigned int id ) {
-    return vms[id];
+    unsigned int vmId = mapVM[id];
+    mapVM[id] = (mapVM[id] + 1) % numVendingMachines;
+    // student s requesting vending machine v
+    prt.print( Printer::NameServer, 'N', id, vms[vmId]->getId());
+    return vms[vmId];
 }
 
 VendingMachine ** NameServer::getMachineList() {
