@@ -12,6 +12,7 @@
 #include "parent.h"
 #include "student.h"
 #include "vendingMachine.h"
+#include "bottlingPlant.h"
 #include <string>
 
 using namespace std;
@@ -48,28 +49,32 @@ int main( int argc, char * argv[] ) {
 	processConfigFile(config.c_str(), cparms);
 
 	Printer prt(cparms.numStudents, cparms.numVendingMachines, cparms.numCouriers);
-	NameServer nameServer(prt, cparms.numVendingMachines, cparms.numStudents);
-	Bank bank(cparms.numStudents);
-	WATCardOffice cardOffice(prt, bank, cparms.numCouriers);
-	Groupoff groupoff(prt, cparms.numStudents, cparms.sodaCost, cparms.groupoffDelay);
 
-	Parent parent(prt, bank, cparms.numStudents, cparms.parentalDelay);
-
-	Student* students[cparms.numStudents];
-	VendingMachine* vends[cparms.numVendingMachines];
-
-    uProcessor p[processors - 1] __attribute__(( unused )); // create more kernel threads
+	uProcessor p[processors - 1] __attribute__(( unused )); // create more kernel threads
     {
+		NameServer nameServer(prt, cparms.numVendingMachines, cparms.numStudents);
+		Bank bank(cparms.numStudents);
+		BottlingPlant plant(prt, nameServer, cparms.numVendingMachines, cparms.maxShippedPerFlavour, cparms.maxStockPerFlavour, cparms.timeBetweenShipments);
+		WATCardOffice cardOffice(prt, bank, cparms.numCouriers);
+		Groupoff groupoff(prt, cparms.numStudents, cparms.sodaCost, cparms.groupoffDelay);
+
+		Parent parent(prt, bank, cparms.numStudents, cparms.parentalDelay);
+
+		Student* students[cparms.numStudents];
+		VendingMachine* machines[cparms.numVendingMachines];
+
+		for (unsigned int i = 0; i < cparms.numVendingMachines; i += 1) {
+			machines[i] = new VendingMachine(prt, nameServer, i, cparms.sodaCost);
+		}
+
 		for (unsigned int i = 0; i < cparms.numStudents; i += 1) {
 			students[i] = new Student(prt, nameServer, cardOffice, groupoff, i, cparms.maxPurchases);
 		}
 
-		for (unsigned int i = 0; i < cparms.numVendingMachines; i += 1) {
-			vends[i] = new VendingMachine(prt, nameServer, i, cparms.sodaCost);
-		}
-
 		for (unsigned int i = 0; i < cparms.numStudents; i += 1) delete students[i];
 
-		for (unsigned int i = 0; i < cparms.numVendingMachines; i += 1) delete vends[i];
+		for (unsigned int i = 0; i < cparms.numVendingMachines; i += 1) {
+			delete machines[i];
+		}
     }
 } // main

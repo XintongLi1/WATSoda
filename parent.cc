@@ -12,12 +12,9 @@ void Parent::main() {
 
     for (;;) {
         // yielding busy wait to destructor
-        _Accept(~Parent) {
-            // print finish message
-            prt.print(Printer::Parent, 'F');
-            return;
-        }
-        _Else {
+        _Accept( ~Parent ) {
+            break;
+        } _Else {
             // each gift has to delay first
             yield(parentalDelay);
 

@@ -3,16 +3,16 @@
 
 _Monitor Printer;
 _Task NameServer;
-_Task BottlingPlant;
 _Task VendingMachine;
+_Task BottlingPlant;
 
 _Task Truck {
 	Printer & prt;
 	NameServer & nameServer;
 	BottlingPlant & plant;
-	unsigned int numVendingMachines, maxStockPerFlavour, * cargo, curr = 0;
+	unsigned int numVendingMachines, maxStockPerFlavour, numFlavours, * cargo, curr = 0, nextMachine = 0;
 
-	VendingMachine** vms;
+	VendingMachine** machines;
 	
 	void main();
   public:

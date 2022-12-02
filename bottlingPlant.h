@@ -7,7 +7,7 @@ _Task NameServer;
 _Task BottlingPlant {
 	Printer & prt;
 	NameServer & nameServer;
-	unsigned int numVendingMachines, maxShippedPerFlavour, maxStockPerFlavour, timeBetweenShipments;
+	unsigned int numVendingMachines, maxShippedPerFlavour, maxStockPerFlavour, timeBetweenShipments, storage = 0;
 	
 	void main();
   public:

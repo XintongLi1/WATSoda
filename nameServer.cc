@@ -1,8 +1,6 @@
 #include "nameServer.h"
 #include "vendingMachine.h"
 #include "printer.h"
-#include <iostream>
-using namespace std;
 
 NameServer::NameServer( Printer & prt, unsigned int numVendingMachines, unsigned int numStudents ) : prt(prt), numVendingMachines(numVendingMachines), numStudents(numStudents) {
     vms = new VendingMachine*[numVendingMachines];
@@ -19,13 +17,11 @@ NameServer::~NameServer(){
 
 
 void NameServer::main() {
-    cout << "start nameserver main" << endl;
     // start
     prt.print( Printer::NameServer, 'S');
     for (;;){
         if (registercnt < numVendingMachines) _Accept(VMregister);
         else {
-            cout << "nameserver registration done" << endl;
             _Accept ( ~NameServer ) { break; }
             or _Accept( getMachine || getMachineList );
         }
@@ -38,7 +34,6 @@ void NameServer::main() {
 	
 void NameServer::VMregister( VendingMachine * vendingmachine ) {
     vms[registercnt] = vendingmachine;
-    cout << "nameserver register" << endl;
     ++registercnt;
     // register vending machine
     prt.print( Printer::NameServer, 'R', vendingmachine->getId());

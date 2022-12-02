@@ -5,11 +5,12 @@
 #include "nameServer.h"
 #include "printer.h"
 
+
 Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOffice, Groupoff & groupoff,
                     unsigned int id, unsigned int maxPurchases ) : prt(prt), nameServer(nameServer), cardOffice(cardOffice), groupoff(groupoff), id(id), maxPurchases(maxPurchases) {
     // select number of bottles to purchase
-    unsigned int amount = prng(1, maxPurchases);
-    
+    amount = prng(1, maxPurchases);
+
     // select a favourite flavour
     flavour = (BottlingPlant::Flavours)prng(0, 3);
     prt.print(Printer::Kind::Student, id, 'S', flavour, amount);
@@ -26,8 +27,7 @@ Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOf
 }
 
 void Student::main() {
-    unsigned int purchased = 0;
-    while ( purchased < amount ) {
+    for ( unsigned int purchased = 0; purchased < amount; purchased += 1 ) {
         // yield random number 1 - 10 to decide next purchase
         yield(prng(1, 10));
 
@@ -44,12 +44,10 @@ void Student::main() {
                     prt.print(Printer::Kind::Student, id, 'G', flavour, giftCard()->getBalance());
                     delete giftCard();
                     giftCard.reset();   // to prevent further usage  
-                    purchased += 1;
                     break;  
                 } catch ( VendingMachine::Free & ) {
                 //  must watch an ad
                     yield(4);
-                    purchased += 1;
                     prt.print(Printer::Kind::Student, id, 'a', flavour, giftCard()->getBalance());
                     break;
                 } catch (VendingMachine::Stock &) {
@@ -64,18 +62,16 @@ void Student::main() {
                     try {   // watcard creation is successful
                         vm->buy(flavour, *thisCard);
                         prt.print(Printer::Kind::Student, id, 'B', flavour, card()->getBalance());
-                        purchased += 1;
                         break;
                     } catch ( VendingMachine::Free & ) {
                         //  must watch an ad
                         yield(4);
-                        purchased += 1;
                         prt.print(Printer::Kind::Student, id, 'A', flavour, card()->getBalance());
                         break;
                     } catch ( VendingMachine::Funds & ) {
                         card.reset();
                         // insufficient funds
-                        card = cardOffice.transfer(id, 5 + vm->cost(), thisCard);
+                        card = cardOffice.transfer(id, 5 + sodaCost, thisCard);
                     } catch (VendingMachine::Stock &) {
                         // out of stock change machine and try again
                         vm = nameServer.getMachine(id);
@@ -84,7 +80,7 @@ void Student::main() {
                         // lost watcard during transfer, try again
                         prt.print(Printer::Kind::Student, id, 'L');
                         thisCard = nullptr;
-                        card.reset();
+                        card.reset();          
                         // create WATCard with $5 balance
                         card = cardOffice.create(id, 5);
                     } // inner try 
@@ -97,7 +93,7 @@ void Student::main() {
                 } // outer try
             } // if               
         } // for 
-    } // while
+    } // for
     prt.print(Printer::Kind::Student, id, 'F');
 
     // free memory
@@ -107,9 +103,10 @@ void Student::main() {
             _Select ( card ) {  // wait for creation before deletion
                 delete card();
             }
-        } catch ( WATCardOffice::Lost & ){
+        } catch ( WATCardOffice::Lost & ) {
             // new watcard deleted in courier
         } 
     }
     if (giftCard.available()){ delete giftCard(); }
+
 }

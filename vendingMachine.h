@@ -1,6 +1,7 @@
 #ifndef __VENDINGMACHINE_H__
 #define __VENDINGMACHINE_H__
 
+#include <string.h>
 #include "bottlingPlant.h"
 
 _Task NameServer;
@@ -12,6 +13,7 @@ _Task VendingMachine {
 	NameServer & nameServer;
 	unsigned int id, sodaCost, * stock;
 	bool restocking = false;
+	std::string raise;
 
 	BottlingPlant::Flavours purchaseFlavour;
 	WATCard * purchaseCard;
