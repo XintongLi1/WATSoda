@@ -10,6 +10,9 @@ Truck::Truck( Printer & prt, NameServer & nameServer, BottlingPlant & plant,
     cargo = new unsigned int[numFlavours];
 }
 
+Truck::~Truck(){ 
+    delete [] cargo;        // free memory
+}
 
 void Truck::main() {
     prt.print( Printer::Kind::Truck, 'S' ); 
@@ -17,8 +20,7 @@ void Truck::main() {
     machines = nameServer.getMachineList();
 
     for (;;) {
-        _Accept( ~Truck ) break;
-        _Else {
+      
             // Tims run
             yield(prng(1, 10));
 
@@ -66,8 +68,7 @@ void Truck::main() {
                 // 1 in 100 chnace of flat tire, yield 10
                 if (prng(100) == 0) yield(10);
             }
-        }
+        
     }
-    delete [] cargo;        // free memory
     prt.print( Printer::Kind::Truck, 'F' ); 
 }

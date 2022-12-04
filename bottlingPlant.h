@@ -19,6 +19,7 @@ _Task BottlingPlant {
 				 unsigned int maxShippedPerFlavour, unsigned int maxStockPerFlavour,
 				 unsigned int timeBetweenShipments );
 	void getShipment( unsigned int cargo[] );
+	~BottlingPlant();
 };
 
 #endif

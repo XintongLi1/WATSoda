@@ -40,7 +40,7 @@ int main( int argc, char * argv[] ) {
 		  default: throw 1;
 		} // switch
 	} catch( ... ) {
-		cout << "Usage: " << argv[0] << " [ config-file | ’d’ [ seed (> 0) | ’d’  [ processors (> 0)| ’d’ ] ] ]" << endl;
+		cout << "Usage: " << argv[0] << " [ config-file | 'd' [ seed (> 0) | 'd'  [ processors (> 0)| 'd' ] ] ]" << endl;
 		exit( 1 );
 	} // try
 
@@ -54,7 +54,7 @@ int main( int argc, char * argv[] ) {
     {
 		NameServer nameServer(prt, cparms.numVendingMachines, cparms.numStudents);
 		Bank bank(cparms.numStudents);
-		BottlingPlant plant(prt, nameServer, cparms.numVendingMachines, cparms.maxShippedPerFlavour, cparms.maxStockPerFlavour, cparms.timeBetweenShipments);
+		BottlingPlant * plant = new BottlingPlant(prt, nameServer, cparms.numVendingMachines, cparms.maxShippedPerFlavour, cparms.maxStockPerFlavour, cparms.timeBetweenShipments);
 		WATCardOffice cardOffice(prt, bank, cparms.numCouriers);
 		Groupoff groupoff(prt, cparms.numStudents, cparms.sodaCost, cparms.groupoffDelay);
 
@@ -73,8 +73,15 @@ int main( int argc, char * argv[] ) {
 
 		for (unsigned int i = 0; i < cparms.numStudents; i += 1) delete students[i];
 
+		// truck should be deleted ahead of vending machines
+		// Otherwise:
+		// uC++ Runtime error (UNIX pid:18271) (uSerial &)0x5624323022d0 : Entry failure while executing mutex destructor: mutex object has been destroyed.
+		// Error occurred while executing task Truck (0x562432342440).
+
+		delete plant;		
+
 		for (unsigned int i = 0; i < cparms.numVendingMachines; i += 1) {
 			delete machines[i];
-		}
+		}		
     }
 } // main

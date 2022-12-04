@@ -13,7 +13,10 @@ VendingMachine::VendingMachine( Printer & prt, NameServer & nameServer, unsigned
     nameServer.VMregister(this);
 
     // stock starts empty
-    stock = new unsigned int[BottlingPlant::Flavours::NUM_OF_FLAVOURS]{0};
+    stock = new unsigned int[BottlingPlant::Flavours::NUM_OF_FLAVOURS];
+    for (unsigned int i = 0; i < BottlingPlant::Flavours::NUM_OF_FLAVOURS; i+=1){
+        stock[i] = 0;
+    }
 }
 
 VendingMachine::~VendingMachine() {
@@ -22,17 +25,34 @@ VendingMachine::~VendingMachine() {
 }
 
 void VendingMachine::buy( BottlingPlant::Flavours flavour, WATCard & card ) {
-    purchaseFlavour = flavour;
-    purchaseCard = &card;
-    
-    cond.wait();
 
-    std::string currRaise = raise;
-    raise = "";
+    // check in stock
+    if (stock[flavour] == 0) {
+        uRendezvousAcceptor();      // uC++ textbook page 122
+        _Throw Stock{};
+    }
 
-    if (currRaise == "funds") _Throw Funds{};
-    if (currRaise == "stock") _Throw Stock{};
-    if (currRaise == "free")  _Throw Free{};
+    // check for funds
+    else if (card.getBalance() < sodaCost) {
+        uRendezvousAcceptor(); 
+        _Throw Funds{};
+    }
+
+    // 1 in 5 to give free
+    else if (prng(5) == 4) {
+        stock[flavour] -= 1;
+        prt.print(Printer::Kind::Vending, id, 'A');
+        uRendezvousAcceptor(); 
+        _Throw Free{};
+    }          
+
+    else {
+        // charge card
+        card.withdraw(sodaCost);
+        // decrease stock
+        stock[flavour] -= 1;
+        prt.print( Printer::Kind::Vending, id, 'B', flavour, stock[flavour]);
+    }
 
 }
 
@@ -56,36 +76,9 @@ unsigned int VendingMachine::getId() const {
 void VendingMachine::main() {
     prt.print(Printer::Kind::Vending, id, 'S', sodaCost);
     for (;;) {
-        _Accept(~VendingMachine) break;
+        _When (!restocking) _Accept(~VendingMachine) break;
         or _Accept( restocked ) prt.print(Printer::Kind::Vending, id, 'R');
         or _Accept( inventory ) prt.print(Printer::Kind::Vending, id, 'r');
-        or _When ( !restocking ) _Accept( buy ) {
-
-            // check in stock
-            if (stock[purchaseFlavour] == 0) {
-                raise = "stock";
-            }
-
-            // 1 in 5 to give free
-            else if (prng(5) == 4) {
-                stock[purchaseFlavour] -= 1;
-                raise = "free";
-            }
-
-            // check for funds
-            else if (purchaseCard->getBalance() < sodaCost) {
-                raise == "funds";
-            }
-
-            else {
-                // charge card
-                purchaseCard->withdraw(sodaCost);
-                // decrease stock
-                stock[purchaseFlavour] -= 1;
-                prt.print( Printer::Kind::Vending, id, 'B', purchaseFlavour, stock[purchaseFlavour]);
-            }
-
-            cond.signalBlock();
-        }
+        or _When ( !restocking ) _Accept( buy );
     }
 }

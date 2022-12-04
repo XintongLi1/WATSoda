@@ -11,9 +11,18 @@ BottlingPlant::BottlingPlant( Printer & prt, NameServer & nameServer, unsigned i
 					}
 				 }
 
+BottlingPlant::~BottlingPlant(){
+	delete [] storage;
+}
 
 void BottlingPlant::getShipment( unsigned int cargo[] ) {
-	if (closeDown) _Throw Shutdown{};
+	if (closeDown) {
+		// Without this:
+		// uC++ Runtime error (UNIX pid:38866) (uSerial &)0x55912230f000 : Rendezvous failure in accepted call from task Truck (0x5591224cd440) to mutex member of task BottlingPlant (0x55912230eda0).
+		// Error occurred while executing task BottlingPlant (0x55912230eda0).
+		uRendezvousAcceptor(); 	
+		_Throw Shutdown{};
+	}
 	
 	for ( unsigned int i = 0; i < Flavours::NUM_OF_FLAVOURS; i += 1) {
 		cargo[i] = storage[i];
@@ -41,7 +50,6 @@ void BottlingPlant::main() {
 		// wait for truck
 		_Accept(~BottlingPlant) {
 			closeDown = true;
-			delete [] storage;
 			_Accept(getShipment);		// notify the truck
 			break;
 		} or _Accept(getShipment) {

@@ -13,11 +13,7 @@ _Task VendingMachine {
 	NameServer & nameServer;
 	unsigned int id, sodaCost, * stock;
 	bool restocking = false;
-	std::string raise;
 
-	BottlingPlant::Flavours purchaseFlavour;
-	WATCard * purchaseCard;
-	uCondition cond;
 	void main();
   public:
 	_Event Free {};						// free, advertisement
