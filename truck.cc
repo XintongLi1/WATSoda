@@ -38,20 +38,20 @@ void Truck::main() {
                 // break if out of stock
                 if (total == 0) break;
 
-                prt.print( Printer::Kind::Truck, 'd', total );  
-
                 // cycle through vending machines and restock, remember which was last
                 nextMachine = ( nextMachine + 1 ) % numVendingMachines;
 
                 VendingMachine* next = machines[nextMachine];
                 unsigned int * nextStock = next->inventory();
 
+                prt.print( Printer::Kind::Truck, 'd', next->getId(), total );  
+
                 unsigned int notReplenished = 0;
                 for (unsigned int f = 0; f < numFlavours; f += 1) {
                     // fill no more than maxStockPerFlavour
                     unsigned int toStock = std::min( maxStockPerFlavour - nextStock[f], cargo[f] );
 
-                    nextStock[f] += toStock, cargo[f] -= toStock, total -= toStock;
+                    nextStock[f] += toStock; cargo[f] -= toStock; total -= toStock;
                     notReplenished += maxStockPerFlavour - nextStock[f];
                 }
 
@@ -60,7 +60,7 @@ void Truck::main() {
 
                 // print amount ot replenished
                 if (notReplenished > 0) prt.print( Printer::Kind::Truck, 'U', next->getId(), notReplenished );
-                // print remiaing amount
+                // print remaining amount
                 prt.print( Printer::Kind::Truck, 'D', next->getId(), total );
 
                 // 1 in 100 chnace of flat tire, yield 10
@@ -68,5 +68,6 @@ void Truck::main() {
             }
         }
     }
+    delete [] cargo;        // free memory
     prt.print( Printer::Kind::Truck, 'F' ); 
 }
