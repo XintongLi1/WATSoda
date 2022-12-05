@@ -2,7 +2,6 @@
 #include "bank.h"
 #include "printer.h"
 
-
 WATCardOffice::Courier::Courier(unsigned int id, WATCardOffice * office, Printer & prt, Bank & bank) :
     id(id), office(office), prt(prt), bank(bank) {}
 
@@ -10,28 +9,31 @@ void WATCardOffice::Courier::main(){
     //  start
     prt.print(Printer::Courier, id, 'S');
     for (;;){
-        Job * job = office->requestWork();
-        if (job == nullptr){
-            // end 
-            prt.print(Printer::Courier, id, 'F');
-            return;
+        _Accept (~Courier) {
+            break;
+        } _Else {
+            Job * job = office->requestWork();
+
+            if ( job == nullptr ) break;
+
+            if (cprng(6) == 0){
+                // lost watcard
+                prt.print(Printer::Courier, id, 'L', job->args.sid);
+                job->result.delivery(new Lost);
+                delete job->args.card;
+            } else {
+                // start funds transfer
+                prt.print(Printer::Courier, id, 't', job->args.sid, job->args.amount);
+                bank.withdraw(job->args.sid, job->args.amount);
+                job->args.card->deposit(job->args.amount);
+                // complete funds transfer
+                prt.print(Printer::Courier, id, 'T', job->args.sid, job->args.amount);
+                job->result.delivery(job->args.card);
+            }
+            delete job;
         }
-        if (cprng(6) == 0){
-            // lost watcard
-            prt.print(Printer::Courier, id, 'L', job->args.sid);
-            job->result.delivery(new Lost);
-            delete job->args.card;
-        } else {
-            // start funds transfer
-            prt.print(Printer::Courier, id, 't', job->args.sid, job->args.amount);
-            bank.withdraw(job->args.sid, job->args.amount);
-            job->args.card->deposit(job->args.amount);
-            // complete funds transfer
-            prt.print(Printer::Courier, id, 'T', job->args.sid, job->args.amount);
-            job->result.delivery(job->args.card);
-        }
-        delete job;
     }
+    prt.print(Printer::Courier, id, 'F');
 }
 
 // ========================= End of Courier Implementation =================================
@@ -40,27 +42,27 @@ void WATCardOffice::Courier::main(){
 
 WATCardOffice::WATCardOffice( Printer & prt, Bank & bank, unsigned int numCouriers )
     : prt(prt), bank(bank), numCouriers(numCouriers) {
-        couriers = new Courier* [numCouriers]; // create a courier pool
+    couriers = new Courier* [numCouriers]; // create a courier pool
+    //  start all couriers in the pool
+    for (unsigned int i = 0; i < numCouriers; ++i){
+        couriers[i] = new Courier(i, this, prt, bank);
     }
+}
 
 WATCardOffice::~WATCardOffice(){
     for (unsigned int i = 0; i < numCouriers; ++i){
         delete couriers[i];
-    }
+    }	
     delete [] couriers;
 }
 
 void WATCardOffice::main(){
     //  start
     prt.print(Printer::WATCardOffice, 'S');
-    //  start all couriers in the pool
-    for (unsigned int i = 0; i < numCouriers; ++i){
-        couriers[i] = new Courier(i, this, prt, bank);
-    }
 
     for (;;){
         _Accept( ~WATCardOffice ){
-            while (!jobs.empty()){
+            for (unsigned int i = 0; i < numCouriers; i += 1){
                 _Accept ( requestWork );
             }
             break;

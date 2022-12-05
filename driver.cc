@@ -52,23 +52,23 @@ int main( int argc, char * argv[] ) {
 
 	uProcessor p[processors - 1] __attribute__(( unused )); // create more kernel threads
     {
-		NameServer nameServer(prt, cparms.numVendingMachines, cparms.numStudents);
+		NameServer * nameServer = new NameServer(prt, cparms.numVendingMachines, cparms.numStudents);
 		Bank bank(cparms.numStudents);
-		BottlingPlant * plant = new BottlingPlant(prt, nameServer, cparms.numVendingMachines, cparms.maxShippedPerFlavour, cparms.maxStockPerFlavour, cparms.timeBetweenShipments);
-		WATCardOffice cardOffice(prt, bank, cparms.numCouriers);
+		BottlingPlant * plant = new BottlingPlant(prt, *nameServer, cparms.numVendingMachines, cparms.maxShippedPerFlavour, cparms.maxStockPerFlavour, cparms.timeBetweenShipments);
+		WATCardOffice * cardOffice = new WATCardOffice(prt, bank, cparms.numCouriers);
 		Groupoff groupoff(prt, cparms.numStudents, cparms.sodaCost, cparms.groupoffDelay);
 
-		Parent parent(prt, bank, cparms.numStudents, cparms.parentalDelay);
+		Parent * parent = new Parent(prt, bank, cparms.numStudents, cparms.parentalDelay);
 
 		Student* students[cparms.numStudents];
 		VendingMachine* machines[cparms.numVendingMachines];
 
 		for (unsigned int i = 0; i < cparms.numVendingMachines; i += 1) {
-			machines[i] = new VendingMachine(prt, nameServer, i, cparms.sodaCost);
+			machines[i] = new VendingMachine(prt, *nameServer, i, cparms.sodaCost);
 		}
 
 		for (unsigned int i = 0; i < cparms.numStudents; i += 1) {
-			students[i] = new Student(prt, nameServer, cardOffice, groupoff, i, cparms.maxPurchases);
+			students[i] = new Student(prt, *nameServer, *cardOffice, groupoff, i, cparms.maxPurchases);
 		}
 
 		for (unsigned int i = 0; i < cparms.numStudents; i += 1) delete students[i];
@@ -78,10 +78,16 @@ int main( int argc, char * argv[] ) {
 		// uC++ Runtime error (UNIX pid:18271) (uSerial &)0x5624323022d0 : Entry failure while executing mutex destructor: mutex object has been destroyed.
 		// Error occurred while executing task Truck (0x562432342440).
 
-		delete plant;		
+		delete plant;	
 
 		for (unsigned int i = 0; i < cparms.numVendingMachines; i += 1) {
 			delete machines[i];
 		}		
+
+		delete nameServer;
+
+		delete cardOffice;
+
+		delete parent;
     }
 } // main
