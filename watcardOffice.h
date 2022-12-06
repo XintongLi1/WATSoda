@@ -2,7 +2,6 @@
 #define __WATCARDOFFICE_H__
 
 #include "watcard.h"
-#include <uPRNG.h>
 #include <queue>
 
 class Printer;
@@ -29,7 +28,6 @@ _Task WATCardOffice {
 		WATCardOffice * office;
 		Printer & prt;
 		Bank & bank;
-		PRNG cprng;
 
 		void main();
 

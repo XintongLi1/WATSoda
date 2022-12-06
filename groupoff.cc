@@ -1,3 +1,4 @@
+#include <uPRNG.h>
 #include "groupoff.h"
 #include "printer.h"
 
@@ -12,16 +13,13 @@ Groupoff::Groupoff( Printer & prt, unsigned int numStudents, unsigned int sodaCo
 
 Groupoff::~Groupoff() {
     // gitcards will be deleted by students
-    // for (unsigned int i = 0; i < numStudents; i += 1) {
-    //     if (gifted[i]) delete cards[i];
-    // } 
     delete [] fcards;
     delete [] cards;
     delete [] gifted;
 }
 
 unsigned int Groupoff::getNextCard(unsigned int cardsCreated, unsigned int cardsGifted) {
-    unsigned int baseIndex = prng(cardsCreated - cardsGifted);
+    unsigned int baseIndex = ::prng(cardsCreated - cardsGifted);
 
     while (gifted[baseIndex]) baseIndex = (baseIndex + 1) % cardsCreated;
 

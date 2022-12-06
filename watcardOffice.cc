@@ -1,3 +1,4 @@
+#include <uPRNG.h>
 #include "watcardOffice.h"
 #include "bank.h"
 #include "printer.h"
@@ -16,7 +17,7 @@ void WATCardOffice::Courier::main(){
 
             if ( job == nullptr ) break;
 
-            if (cprng(6) == 0){
+            if (prng(6) == 0){
                 // lost watcard
                 prt.print(Printer::Courier, id, 'L', job->args.sid);
                 job->result.delivery(new Lost);
@@ -42,7 +43,7 @@ void WATCardOffice::Courier::main(){
 
 WATCardOffice::WATCardOffice( Printer & prt, Bank & bank, unsigned int numCouriers )
     : prt(prt), bank(bank), numCouriers(numCouriers) {
-    couriers = new Courier* [numCouriers]; // create a courier pool
+    couriers = new Courier*[numCouriers]; // create a courier pool
     //  start all couriers in the pool
     for (unsigned int i = 0; i < numCouriers; ++i){
         couriers[i] = new Courier(i, this, prt, bank);

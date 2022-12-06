@@ -1,3 +1,4 @@
+#include <uPRNG.h>
 #include "student.h"
 #include "groupoff.h"
 #include "watcardOffice.h"
@@ -5,14 +6,13 @@
 #include "nameServer.h"
 #include "printer.h"
 
-
 Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOffice, Groupoff & groupoff,
                     unsigned int id, unsigned int maxPurchases ) : prt(prt), nameServer(nameServer), cardOffice(cardOffice), groupoff(groupoff), id(id), maxPurchases(maxPurchases) {
     // select number of bottles to purchase
-    amount = prng(1, maxPurchases);
+    amount = ::prng(1, maxPurchases);
 
     // select a favourite flavour
-    flavour = (BottlingPlant::Flavours)prng(0, 3);
+    flavour = (BottlingPlant::Flavours)::prng(0, 3);
     prt.print(Printer::Kind::Student, id, 'S', flavour, amount);
 
     // create WATCard with $5 balance
@@ -29,7 +29,7 @@ Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOf
 void Student::main() {
     for ( unsigned int purchased = 0; purchased < amount; purchased += 1 ) {
         // yield random number 1 - 10 to decide next purchase
-        yield(prng(1, 10));
+        yield(::prng(1, 10));
 
         for (;;) {
             unsigned int sodaCost = vm->cost();
@@ -76,16 +76,10 @@ void Student::main() {
                         // out of stock change machine and try again
                         vm = nameServer.getMachine(id);
                         prt.print(Printer::Kind::Student, id, 'V', vm->getId());
-                    } catch( WATCardOffice::Lost & ) {
-                        // lost watcard during transfer, try again
-                        prt.print(Printer::Kind::Student, id, 'L');
-                        thisCard = nullptr;
-                        card.reset();          
-                        // create WATCard with $5 balance
-                        card = cardOffice.create(id, 5);
-                    } // inner try 
+                    }
                 } catch ( WATCardOffice::Lost & ){
                     // lost watcard during creation, no printing msg
+                    if (purchased > 0) prt.print(Printer::Kind::Student, id, 'L');
                     thisCard = nullptr;
                     card.reset();
                     // re-create WATCard with $5 balance
@@ -108,5 +102,4 @@ void Student::main() {
         } 
     }
     if (giftCard.available()){ delete giftCard(); }
-
 }

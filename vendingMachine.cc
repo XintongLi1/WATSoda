@@ -1,3 +1,4 @@
+#include <uPRNG.h>
 #include "vendingMachine.h"
 #include "watcard.h"
 #include "nameServer.h"
@@ -10,10 +11,7 @@ VendingMachine::VendingMachine( Printer & prt, NameServer & nameServer, unsigned
     nameServer.VMregister(this);
 
     // stock starts empty
-    stock = new unsigned int[BottlingPlant::Flavours::NUM_OF_FLAVOURS];
-    for (unsigned int i = 0; i < BottlingPlant::Flavours::NUM_OF_FLAVOURS; i+=1){
-        stock[i] = 0;
-    }
+    stock = new unsigned int[BottlingPlant::Flavours::NUM_OF_FLAVOURS]{0};
 }
 
 VendingMachine::~VendingMachine() {
@@ -36,7 +34,7 @@ void VendingMachine::buy( BottlingPlant::Flavours flavour, WATCard & card ) {
     }
 
     // 1 in 5 to give free
-    else if (prng(5) == 4) {
+    else if (::prng(5) == 4) {
         stock[flavour] -= 1;
         prt.print(Printer::Kind::Vending, id, 'A');
         uRendezvousAcceptor(); 
