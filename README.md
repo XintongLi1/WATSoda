@@ -1,5 +1,7 @@
-# WATSoda - CS343 Coursework
-## A concurrency solution for soda purchase, delivery, and production - task communication in µC++ and high-level techniques for structuring complex interactions among tasks.
+# WATSoda 
+- CS343 Coursework
+
+A concurrency solution for soda purchase, delivery, and production - task communication in µC++ and high-level techniques for structuring complex interactions among tasks.
 
 For project details please read [assign6.pdf](https://github.com/XintongLi1/WATSoda/blob/master/assign6.pdf).
 
