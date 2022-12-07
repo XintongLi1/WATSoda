@@ -26,6 +26,20 @@ Student::Student( Printer & prt, NameServer & nameServer, WATCardOffice & cardOf
     prt.print(Printer::Kind::Student, id, 'V', (int)(vm->getId()));
 }
 
+Student::~Student() {
+    // free memory
+    if (thisCard) { delete thisCard; }
+    else {  // watcard not created
+        try {
+            _Select ( card ) {  // wait for creation before deletion
+                delete card();
+            }
+        } catch ( WATCardOffice::Lost & ) {
+            // new watcard deleted in courier
+        } 
+    }
+}
+
 void Student::main() {
     for ( unsigned int purchased = 0; purchased < amount; purchased += 1 ) {
         // yield random number 1 - 10 to decide next purchase
@@ -42,7 +56,6 @@ void Student::main() {
                     // purchase (Use gift card first if it was not used)
                     vm->buy(flavour, *giftCard());
                     prt.print(Printer::Kind::Student, id, 'G', flavour, giftCard()->getBalance());
-                    delete giftCard();
                     giftCard.reset();   // to prevent further usage  
                     break;  
                 } catch ( VendingMachine::Free & ) {
@@ -89,17 +102,4 @@ void Student::main() {
         } // for 
     } // for
     prt.print(Printer::Kind::Student, id, 'F');
-
-    // free memory
-    if (thisCard) { delete thisCard; }
-    else {  // watcard not created
-        try {
-            _Select ( card ) {  // wait for creation before deletion
-                delete card();
-            }
-        } catch ( WATCardOffice::Lost & ) {
-            // new watcard deleted in courier
-        } 
-    }
-    if (giftCard.available()){ delete giftCard(); }
 }

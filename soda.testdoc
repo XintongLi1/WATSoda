@@ -120,7 +120,8 @@ D1,2
 F                                                                                                       
 ***********************
 
-Analysis: Stud1 recieves a free drink from Mach2 and watches advertisement. This counts as a purchase and is their last so Stud1 terminates.
+
+Analysis: Stud1 receives a free drink from Mach2 and watches advertisement. This counts as a purchase and is their last so Stud1 terminates.
 
 Test 3: Flat Tire
 Input: ./soda d 91
@@ -171,7 +172,7 @@ D1,1
 F                                                                                                       
 ***********************
 
-Analysis: The truck gets a flat tire, yields to repare and continues
+Analysis: The truck gets a flat tire, yields to repair and continues
 
 Test 4: Lost card mid trip
 Input: ./soda d 91
@@ -278,3 +279,99 @@ F
 ***********************
 
 Analysis: Stud 1 buys their first drink with a giftcard and gets it free so we print 'a'
+
+Test 6: Multi processors
+Input: ./soda d 1 2
+Output:
+Parent	Gropoff	WATOff	Names	Truck	Plant	Stud0   Stud1   Mach0   Mach1   Mach2   Cour0   Cour1   
+******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* 
+        S               S               S                                               S               
+S               S       R0      S                               S2                              S       
+                        R1              G10                             S2                              
+D1,1            C0,5    R2                      S1,2                            S2      t0,5            
+D1,1            W       N0,0                    V0      S3,4                                            
+                C1,5    N1,1    P10     P                                                               
+D1,2            W               d1,10   G6              V1              r                       t1,5    
+        D2                      U1,18                                   R                               
+D0,2                    N0,1    D1,0            V1                      A                               
+                                P6                                                                      
+D1,3    D2                      d2,6    P       a1,2                    B3,1    r                       
+D0,3    F                       U2,22   G8              G3,0                    R       T0,5            
+D1,3                            D2,0            G1,0                    B1,1                    T1,5    
+                                P8              F       B3,3            B3,0                            
+D0,1                            d0,8    P                       r                                       
+                        N1,2    U0,20                                                                   
+D1,3                    N1,0    D0,0    G7              V2      R                                       
+                        N1,1                            V0                                              
+D0,1                    N1,2    P7      P               V1                                              
+                        N1,0    d1,7    G7              V2              r                               
+D1,3                            U1,15                   V0              R                               
+D0,1                    N1,1    D1,0                    V1              B3,1                            
+                                P7      P               B3,1                                            
+D1,1            T1,7            d2,7    G3                                      r                       
+                W               U2,15                                           R       t1,7            
+D1,2                            D2,0                    B3,6            B3,0            T1,7            
+D1,1                                                    F                                               
+D1,1                            F       F                                                               
+D1,1                                                            F       F                               
+D1,2                    F                                                       F                       
+D0,3            F                                                                       F       F       
+D1,1                                                                                                    
+F                                                                                                       
+***********************
+
+Analysis: Even given the same seed, output is different from the last test. Multiprocessors allows for context switches which changes the order of execution and so the return of the rng should be different each time.
+
+Config used:
+SodaCost		2	# Manufacturer Suggested Retail Price (MSRP) per bottle
+NumStudents		2	# number of students to create
+MaxPurchases		4	# maximum number of bottles a student purchases
+NumVendingMachines	3	# number of vending machines
+MaxStockPerFlavour	7	# maximum number of bottles of each flavour in a vending machine
+MaxShippedPerFlavour	3	# maximum number of bottles of each flavour generated by the bottling
+				#   plant per production run
+TimeBetweenShipments	3	# length of time between shipment pickup
+GroupoffDelay          10      # length of time between initializing gift cards
+ParentalDelay           5       # length of time between deposits of funds
+NumCouriers             4       # maximum number of couriers in the pool
+
+Test 7: No task Courrier
+Input: ./soda d 21312 10
+Output:
+Parent	Gropoff	WATOff	Names	Truck	Plant	Stud0   Stud1   Mach0   Mach1   Mach2   Cour0   Cour1   Cour2   Cour3   
+******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* 
+                        S       S       S                                               S       S                       
+S       S       S                       G3                                                              S       S       
+D0,2                    R0                                                                                              
+D1,1                    R1                                      S2                                                      
+D1,3                    R2                                              S2                                              
+D0,1                            P3      P       S2,1                            S2                                      
+D1,1            C0,5            d1,3    G5                              r                                               
+D0,3            W       N0,0    U1,25                                   R               L0                              
+D1,2                            D1,0            V0      S3,2                                                            
+D1,1            C1,5            P5      P                                                                               
+D0,1            W       N1,1    d2,5    G4              V1                      r               t1,5                    
+D1,3    D2      C0,5            U2,23                                           R               T1,5                    
+D1,3    D2      W       N1,2    D2,0                    V2                                              t0,5            
+D0,3    F               N0,1    P4      P                                       B3,2                    T0,5            
+D1,3                            d0,4    G7      V1      G3,0    r       A                                               
+D1,3                            U0,24                           R               B3,1                                    
+D1,3                            D0,0            a2,2    B3,3                                                            
+D1,3                            P7      P       F       F                                                               
+D0,3                            d1,7    G5                              r                                               
+D0,3                            U1,19                                   R                                               
+D0,3                            D1,0                                                                                    
+D1,3                                                                                                                    
+D1,3                            F       F                                                                               
+D1,2                                                            F                                                       
+D1,3                                                                                                                    
+D0,1                                                                    F                                               
+D1,3                                                                            F                                       
+D0,3                    F                                                                                               
+D1,1            F                                                                       F       F       F       F       
+D0,1                                                                                                                    
+D1,1                                                                                                                    
+F                                                                                                                       
+***********************
+
+Analysis: Cour3 never recieves a task but still terminates normally

@@ -55,6 +55,12 @@ WATCardOffice::~WATCardOffice(){
         delete couriers[i];
     }	
     delete [] couriers;
+
+    while (!jobs.empty()) {
+        Job* job = jobs.front();
+        delete job;
+        jobs.pop();     // remove the first job from queue
+    }
 }
 
 void WATCardOffice::main(){
