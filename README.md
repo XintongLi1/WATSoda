@@ -1,20 +1,7 @@
-# CS343Final
+# WATSoda - CS343 Coursework
+## A concurrency solution for soda purchase, delivery, and production - task communication in µC++ and high-level techniques for structuring complex interactions among tasks.
 
-Chapter 11 administrators
+For project details please read [assign6.pdf](https://github.com/XintongLi1/WATSoda/blob/master/assign6.pdf).
 
-First phase - Monday (Maybe 4, or 9:30)
 
-main
-
-Student Groupoff Vending Machines - Chris 
-
-Parent Courrier Bank WATCardOffice - Xintong
-
-Second Phase - Thursday
-Truck and NameServer
-
-Third Phase - Saturday
-Bottling Plant 
-
-Final Phase - Tuesday
-Testing & Documentation
+![image](https://user-images.githubusercontent.com/55467454/206076092-650909d1-7e42-4c67-a276-cb323d8302b0.png)
